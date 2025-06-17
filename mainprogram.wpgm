@@ -1,10 +1,11 @@
 import personajes.* //importa todo
 import wollok.game.*
+
 program gorditoPC{
-    game.title("Se le cayo la mila al gordo")
     game.width(32)
     game.height(18)
     game.boardGround("ChatGPT Image Jun 10, 2025, 10_47_11 PM.png")
+    
     game.start()
-    game.addVisualCharacter(jugador)
+    nivel1.iniciar()
 }
