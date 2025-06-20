@@ -50,7 +50,7 @@ class Bala{
 
     method posicionActual() = position
 
-    method image() = 'bala.png'
+    method image() = 'bala(5).png'
 }
 class BalaRifle {
     
