@@ -3,16 +3,18 @@
 class Arma {
     var daño
     var cadencia
+    const listaSonidos
 
     method dañoArma() = daño
     method cadenciaDisparo() = cadencia
-    method disparar(objetivo){
-
+    method disparar(objetivo) {}
+    method sonidoAleatorioArma() {
+        return listaSonidos.anyOne().toString()
     }
 }
 
 class Rifle inherits Arma {
-
+    
 }
 
 class Bala{
@@ -56,6 +58,6 @@ class BalaRifle {
     
 }
 
-const rifle = new Arma(daño=10,cadencia=0.8)
-const pistolaPlasma = new Arma(daño=7,cadencia=0.4)
-const cañonSonico = new Arma(daño=20,cadencia=1)
+const rifle = new Arma(daño=10,cadencia=0.8, listaSonidos=['sonidoRifle(1).mp3','sonidoRifle(4).mp3','sonidoRifle(5).mp3'])
+//const pistolaPlasma = new Arma(daño=7,cadencia=0.4)
+//const cañonSonico = new Arma(daño=20,cadencia=1)

@@ -21,14 +21,15 @@ class Jugador {
         var posY = self.posicionActual().y() + 0
         var bala = new Bala(position = game.at(posX, posY), id = idBala)
         game.addVisual(bala)
+        game.sound(arma.sonidoAleatorioArma()).play()
         bala.desplazamientoBala()
         idBala += 1
 
         // Activar cooldown
         puedeDisparar = false
         game.onTick(arma.cadenciaDisparo()*1000, 'cooldownDisparo', {
-        puedeDisparar = true
-        game.removeTickEvent('cooldownDisparo')
+          puedeDisparar = true
+          game.removeTickEvent('cooldownDisparo')
         })}
   }
   
@@ -191,15 +192,17 @@ class Indicaciones {
 
   method visualizar() {
     game.addVisual(self)
-    game.onTick(duracion*1000, nombre, {
-      game.removeVisual(self)
-      game.removeTickEvent(nombre)
-    })
   }
-
+  
+  method remover() {
+    game.removeVisual(self)
+    game.removeTickEvent(nombre)
+  }
   method nombreGetter() = nombre
 
   method image() = imagen
+
+  method duracionImagen() = duracion
 }
 
 object controles {
@@ -209,6 +212,7 @@ object controles {
     keyboard.s().onPressDo {jugador.abajo()}
     keyboard.d().onPressDo {jugador.adelante()}
     keyboard.p().onPressDo {jugador.disparar()}
+    keyboard.enter().onPressDo {nivel0.cambiarImagen()}
   }
 }
 
@@ -216,37 +220,77 @@ object nivel1 {
     method iniciar() {
       const jugador = new Jugador(vida = 100, arma = rifle)
       game.addVisualCharacter(jugador)
-      
-      game.sound("Mick Gordon - 11. BFG Division [QHRuTYtSbJQ].mp3").play()
+
+      //game.sound("Mick Gordon - 11. BFG Division [QHRuTYtSbJQ].mp3").play()
       controles.teclas(jugador)
-      //
-      creadorHordas.generarHordaAleatoria(15, 5)
-      /*
-      const tuto1 = new Indicaciones(nombre='tuto1', imagen='Muevete-con-WASD.png', duracion=7, position=game.at(10,14))
-      const tuto2 = new Indicaciones(nombre='tuto2',imagen='disparecon.png',duracion=7,position=game.at(10,14))
-      const tuto3 = new Indicaciones(nombre='tuto3', imagen='Cuidado-con-las-hordas.png', duracion=7, position=game.at(10,14))3
-      
-      var listaTutorial = []
-
-      listaTutorial.add(tuto1)
-      listaTutorial.add(tuto2)
-      listaTutorial.add(tuto3)
-
-      var id = 0
-
-      game.onTick(, 'ejemplo',{
-        if (id < 3) {
-          listaTutorial.get(id).visualizar()
-          id += 1
-          game.onTick(7000, 'espera', {game.removeTickEvent('espera')})
-          
-        }
-      })
-
+      //creadorHordas.generarHordaAleatoria(15, 5)
+/*
       game.onTick(1000, 'horda_1', {
         creadorHordas.generarHordaAleatoria(15, 3)
         game.removeTickEvent('horda_1')
-      })
-      */
+      }) */
   }
+}
+
+object nivel0{
+
+  method iniciar() {
+    const jugador = new Jugador(vida = 100, arma = rifle)
+    game.addVisualCharacter(jugador)
+    controles.teclas(jugador)
+    self.primeraImagen()
+  }
+
+  const tuto0 = new Indicaciones(nombre='tuto0', imagen='presioneEnterParaContinuar.png', duracion=10, position=game.at(1,17))
+
+  const tuto1 = new Indicaciones(nombre='tuto1', imagen='Muevete-con-WASD.png', duracion=10, position=game.at(12,14))
+  const tuto2 = new Indicaciones(nombre='tuto2',imagen='disparecon.png',duracion=10,position=game.at(12,14))
+  const tuto3 = new Indicaciones(nombre='tuto3', imagen='instruccionPowerUp.png', duracion=10, position=game.at(11,9))
+  const tuto4 = new Indicaciones(nombre='tuto4', imagen='interactivo(1).png', duracion=10, position=game.at(7,14))
+  const tuto5 = new Indicaciones(nombre='tuto5', imagen='interactivo(2).png', duracion=10, position=game.at(7,14))
+  
+  const tutorialImagenes = [tuto1,tuto2,tuto3]
+  const tutorialInteractivo = [tuto4,tuto5]
+
+  var id = 0
+  
+  method primeraImagen() {
+    tutorialImagenes.get(0).visualizar()
+    tuto0.visualizar()
+  }
+
+  method cambiarImagen() {
+    if (id < tutorialImagenes.size() - 1) {
+      tutorialImagenes.get(id).remover()
+      id += 1
+      tutorialImagenes.get(id).visualizar()
+    } else if (id == tutorialImagenes.size() - 1) {
+      tutorialImagenes.get(id).remover()
+      tuto0.remover()
+      id += 1
+      self.imagenTutorialInteractivo()  
+      }
+  }
+
+  method imagenTutorialInteractivo() {
+    var id_interactivo = 0
+    tutorialInteractivo.get(id_interactivo).visualizar()
+    creadorHordas.generarHordaAlien(1,5)
+    creadorHordas.
+  }
+/*
+    game.onTick(1000, 'espera',{
+      if (puedeMostrar && id < tutos.size()) {
+        puedeMostrar = false
+        tutos.get(id).visualizar()
+        game.onTick(tutos.get(id).duracionImagen()*1000, 'duracionImagen',{
+          tutos.get(id).remover()    
+          puedeMostrar = true
+          game.removeTickEvent('duracionImagen')
+          id += 1    
+        })
+        
+      } else if (puedeMostrar && id == tutos.size()) game.removeTickEvent('espera')
+    }) */
+  
 }

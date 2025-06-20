@@ -8,5 +8,5 @@ program juego{
     game.boardGround("ChatGPT Image Jun 10, 2025, 10_47_11 PM.png")
     
     game.start()
-    nivel1.iniciar()
+    nivel0.iniciar()
 }
