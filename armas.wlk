@@ -20,8 +20,13 @@ class Rifle inherits Arma {
 class Bala{
     var property position
     var id
+
+    const listaSonidoBala = ['sonidoBala(1).mp3','sonidoBala(2).mp3','sonidoBala(3).mp3']
+
     override method toString() = id
     method balaID() = 'movimientoBala_' + id
+
+    method sonidoBala() = listaSonidoBala.anyOne().toString()
 
     method eliminarBala() {
         game.removeTickEvent(self.balaID())
@@ -29,13 +34,14 @@ class Bala{
     }
 
     method desplazamientoBala() {
-        game.onTick(3, self.balaID(), {self.movimientoEnX(self.posicionActual())})
+        game.onTick(2, self.balaID(), {self.movimientoEnX(self.posicionActual())})
     }
     method movimientoEnX(posicion) {
         // Habria que añadir la condicion de que se eliminen si impacta con un enemigo
         if (posicion.x()>32) {
             self.eliminarBala()
         } else if (!self.colision()) {
+            game.sound(self.sonidoBala()).play()
             self.listaColisiones().get(0).recibirDaño(rifle.dañoArma())
             self.eliminarBala()
         } else position = posicion.right(1)

@@ -5,7 +5,6 @@ program juego{
     game.width(32)
     game.height(18)
     //menuPrincipal.fondoMenu()
-    game.boardGround("ChatGPT Image Jun 10, 2025, 10_47_11 PM.png")
     
     game.start()
     nivel0.iniciar()

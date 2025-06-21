@@ -91,7 +91,7 @@ class Enemigos {
 class AlienRaptor inherits Enemigos{
 
   override method movimiento(){
-    const tiempo = new Range(start = 750, end = 2500).anyOne() //una velocidad minima de 500 maxima 2500
+    const tiempo = new Range(start = 750, end = 2000).anyOne() //una velocidad minima de 500 maxima 2500
     game.onTick(tiempo, self.enemigoID(), {self.avanzar()})
     // Añadir eliminacion de enemigos si pasan del escenario
   }
@@ -103,7 +103,7 @@ class AlienRaptor inherits Enemigos{
 class Crawler inherits Enemigos {
 
   override method movimiento(){
-    const tiempo = new Range(start = 500, end = 1000).anyOne() //una velocidad minima de 500 maxima 1000
+    const tiempo = new Range(start = 500, end = 750).anyOne() //una velocidad minima de 500 maxima 1000
     game.onTick(tiempo, self.enemigoID(), {self.avanzar()})
   }
 
@@ -115,21 +115,19 @@ class FinalBoss inherits Enemigos{
 }
 
 object creadorHordas {
-  var tiposDeEnemigos = [
-    new AlienRaptor(nombre='alienRápido', vida=15, daño=3),
-    new Crawler(nombre='crawler', vida=30, daño=2)
-  ]
   const tipoDeEnemigo = ['alien','crawler']
-  var listaEnemigos = []
+  const listaEnemigos = []
+
+  method verListaEnemigos() = listaEnemigos
   
   method generarHordaAlien(cantidad, tiempoMinimoSpawn){
       var id = 0
       game.onTick(self.tiempoAparicion(tiempoMinimoSpawn)*1000, 'horda Enemigos',{
         if (id < cantidad) {
           const enemigo = self.generarAlienRaptor(id)
-          listaEnemigos.add(enemigo)
           game.addVisual(enemigo)
           enemigo.movimiento()
+          listaEnemigos.add(enemigo)
           id += 1
         }
       })
@@ -218,12 +216,35 @@ object controles {
 
 object nivel1 {
     method iniciar() {
+      
       const jugador = new Jugador(vida = 100, arma = rifle)
-      game.addVisualCharacter(jugador)
-
-      //game.sound("Mick Gordon - 11. BFG Division [QHRuTYtSbJQ].mp3").play()
+      game.boardGround("FondoJuego(2).png")
+      game.addVisual(jugador)
+      game.sound("Mick Gordon - 11. BFG Division [QHRuTYtSbJQ].mp3").play()
       controles.teclas(jugador)
-      //creadorHordas.generarHordaAleatoria(15, 5)
+
+      const tuto0 = new Indicaciones(nombre='tuto0', imagen='Nivel-1-ten-cuidado-con.png', duracion=7, position=game.at(8,14))
+      const tutos = [tuto0]
+      var id = 0
+      var puedeMostrar = true
+
+      game.onTick(1000, 'espera',{
+      if (puedeMostrar && id < tutos.size()) {
+        puedeMostrar = false
+        tutos.get(id).visualizar()
+        game.onTick(tutos.get(id).duracionImagen()*1000, 'duracionImagen',{
+          tutos.get(id).remover()    
+          puedeMostrar = true
+          game.removeTickEvent('duracionImagen')
+          id += 1    
+        })
+        
+      } else if (puedeMostrar && id == tutos.size()) {
+        game.removeTickEvent('espera')
+        creadorHordas.generarHordaAleatoria(15, 5)
+      } 
+      })
+      
 /*
       game.onTick(1000, 'horda_1', {
         creadorHordas.generarHordaAleatoria(15, 3)
@@ -232,22 +253,25 @@ object nivel1 {
   }
 }
 
-object nivel0{
+object nivel0 {
 
   method iniciar() {
+    game.boardGround("FondoJuego(1).png")
     const jugador = new Jugador(vida = 100, arma = rifle)
-    game.addVisualCharacter(jugador)
+    game.addVisual(jugador)
     controles.teclas(jugador)
     self.primeraImagen()
   }
 
-  const tuto0 = new Indicaciones(nombre='tuto0', imagen='presioneEnterParaContinuar.png', duracion=10, position=game.at(1,17))
+  const tuto0 = new Indicaciones(nombre='tuto0', imagen='Presione-enter-para-cont.png', duracion=10, position=game.at(0,17))
 
   const tuto1 = new Indicaciones(nombre='tuto1', imagen='Muevete-con-WASD.png', duracion=10, position=game.at(12,14))
   const tuto2 = new Indicaciones(nombre='tuto2',imagen='disparecon.png',duracion=10,position=game.at(12,14))
   const tuto3 = new Indicaciones(nombre='tuto3', imagen='instruccionPowerUp.png', duracion=10, position=game.at(11,9))
-  const tuto4 = new Indicaciones(nombre='tuto4', imagen='interactivo(1).png', duracion=10, position=game.at(7,14))
-  const tuto5 = new Indicaciones(nombre='tuto5', imagen='interactivo(2).png', duracion=10, position=game.at(7,14))
+  const tuto4 = new Indicaciones(nombre='tuto4', imagen='interactivo(1).png', duracion=10, position=game.at(4,14))
+  const tuto5 = new Indicaciones(nombre='tuto5', imagen='interactivo(2).png', duracion=10, position=game.at(5,14))
+  const tuto6 = new Indicaciones(nombre='tuto6', imagen='Perfecto-pasemos-al-niv.png', duracion=10, position=game.at(10,14))
+  
   
   const tutorialImagenes = [tuto1,tuto2,tuto3]
   const tutorialInteractivo = [tuto4,tuto5]
@@ -275,8 +299,28 @@ object nivel0{
   method imagenTutorialInteractivo() {
     var id_interactivo = 0
     tutorialInteractivo.get(id_interactivo).visualizar()
-    creadorHordas.generarHordaAlien(1,5)
-    creadorHordas.
+    creadorHordas.generarHordaAlien(1,1)
+    game.onTick(3000, 'muerteEnemigo', {
+      var vidaEnemigo = creadorHordas.verListaEnemigos().get(id_interactivo).mostrarVida()
+      if (vidaEnemigo <= 0 && id_interactivo == 0){
+        game.sound("level-up-enhancement-8-bit-retro-sound-effect-153002.mp3").play()
+        tutorialInteractivo.get(id_interactivo).remover()
+        id_interactivo += 1
+        tutorialInteractivo.get(id_interactivo).visualizar()
+        creadorHordas.generarHordaCrawler(1,1)
+        vidaEnemigo = creadorHordas.verListaEnemigos().get(id_interactivo).mostrarVida()
+      } else if ((vidaEnemigo <= 0 && id_interactivo == 1)) {
+        game.sound("level-up-enhancement-8-bit-retro-sound-effect-153002.mp3").play()
+        tutorialInteractivo.get(id_interactivo).remover()
+        tuto6.visualizar()
+        game.removeTickEvent('muerteEnemigo')
+        game.onTick(5000, 'cargarNivelSiguiente', {
+          game.clear()
+          game.removeTickEvent('cargarNivelSiguiente')
+          nivel1.iniciar()
+        })
+        }
+    })
   }
 /*
     game.onTick(1000, 'espera',{
