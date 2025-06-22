@@ -1,6 +1,9 @@
 import personajes.* //importa todo
 import wollok.game.*
 import menuPrincipal.*
+import nivel0.nivel0
+import nivel1.nivel1
+
 program juego{
     game.width(32)
     game.height(18)
