@@ -8,7 +8,6 @@ object nivel0 {
 
   method iniciar() {
     game.boardGround("FondoJuego(1).png")
-    const jugador = new Jugador(vida = 100, arma = rifle)
     game.addVisual(jugador)
     controles.teclas(jugador)
     self.primeraImagen()

@@ -5,7 +5,6 @@ import imagenIndicaciones.*
 object nivel1 {
     method iniciar() {
       
-      const jugador = new Jugador(vida = 100, arma = rifle)
       game.boardGround("FondoJuego(2).png")
       game.addVisual(jugador)
       game.sound("Mick Gordon - 11. BFG Division [QHRuTYtSbJQ].mp3").play()
@@ -30,7 +29,7 @@ object nivel1 {
         
       } else if (puedeMostrar && id == tutos.size()) {
         game.removeTickEvent('espera')
-        creadorHordas.generarHordaAleatoria(15, 5)
+        creadorHordas.generarHordaAlien(2, 1)
       } 
       })
       

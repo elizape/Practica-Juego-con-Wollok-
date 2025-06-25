@@ -1,3 +1,6 @@
+import personajes.*
+import nivel0.*
+import nivel1.*
 // Para mi la clase de Arma y Bala deben ir en la misma clase pero eso lo vemos despues
 
 class Arma {
@@ -11,10 +14,14 @@ class Arma {
     method sonidoAleatorioArma() {
         return listaSonidos.anyOne().toString()
     }
-}
 
-class Rifle inherits Arma {
-    
+    method aplicarPowerUpDaño(nuevoDaño) {
+        daño = nuevoDaño
+    }
+
+    method aplicarPowerUpCadencia(nuevaCadencia) {
+      cadencia = nuevaCadencia
+    }
 }
 
 class Bala{
@@ -33,19 +40,34 @@ class Bala{
         game.removeVisual(self)
     }
 
-    method desplazamientoBala() {
-        game.onTick(2, self.balaID(), {self.movimientoEnX(self.posicionActual())})
+    method desplazamientoBalaX(arma) {
+        game.onTick(2, self.balaID(), {self.movimientoEnX(self.posicionActual(),arma)})
     }
-    method movimientoEnX(posicion) {
+
+    method desplazamientoBalaY(arma) {
+        game.onTick(2, self.balaID(), {self.movimientoEnY(self.posicionActual(),arma)})
+    }
+
+    method movimientoEnX(posicion, arma) {
         // Habria que añadir la condicion de que se eliminen si impacta con un enemigo
         if (posicion.x()>32) {
             self.eliminarBala()
         } else if (!self.colision()) {
             game.sound(self.sonidoBala()).play()
-            self.listaColisiones().get(0).recibirDaño(rifle.dañoArma())
+            self.listaColisiones().get(0).recibirDaño(arma.dañoArma())
             self.eliminarBala()
         } else position = posicion.right(1)
-      
+    }
+
+    method movimientoEnY(posicion,arma) {
+        // Habria que añadir la condicion de que se eliminen si impacta con un enemigo
+        if (posicion.x()<0) {
+            self.eliminarBala()
+        } else if (!self.colision()) {
+            game.sound(self.sonidoBala()).play()
+            self.listaColisiones().get(0).recibirDaño(arma.dañoArma())
+            self.eliminarBala()
+        } else position = posicion.left(1)
     }
 
     method colision() {
@@ -57,13 +79,13 @@ class Bala{
     }
 
     method posicionActual() = position
-
+    
     method image() = 'bala(5).png'
 }
-class BalaRifle {
+class BalaRifle inherits Bala{
     
 }
 
 const rifle = new Arma(daño=10,cadencia=0.8, listaSonidos=['sonidoRifle(1).mp3','sonidoRifle(4).mp3','sonidoRifle(5).mp3'])
-//const pistolaPlasma = new Arma(daño=7,cadencia=0.4)
+const pistolaPlasma = new Arma(daño=7,cadencia=0.4, listaSonidos=['sonidoRifle(1).mp3','sonidoRifle(4).mp3','sonidoRifle(5).mp3'])
 //const cañonSonico = new Arma(daño=20,cadencia=1)

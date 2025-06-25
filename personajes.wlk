@@ -11,6 +11,8 @@ class Jugador {
   method puedeDisparar() = puedeDisparar
 
   method posicionActual() = position
+
+  method mostrarArma() = arma
   
   method cambiarArma(nuevaArma) {
     arma = nuevaArma
@@ -23,13 +25,13 @@ class Jugador {
         const posY = self.posicionActual().y() + 0
         const bala = new Bala(position = game.at(posX, posY), id = idBala)
         game.addVisual(bala)
-        game.sound(arma.sonidoAleatorioArma()).play()
-        bala.desplazamientoBala()
+        game.sound(self.mostrarArma().sonidoAleatorioArma()).play()
+        bala.desplazamientoBalaX(self.mostrarArma())
         idBala += 1
 
         // Activar cooldown
         puedeDisparar = false
-        game.onTick(arma.cadenciaDisparo()*1000, 'cooldownDisparo', {
+        game.onTick(self.mostrarArma().cadenciaDisparo()*1000, 'cooldownDisparo', {
           puedeDisparar = true
           game.removeTickEvent('cooldownDisparo')
         })}
@@ -37,6 +39,10 @@ class Jugador {
   
   method recibirDaño(dañoRecibido) {
     vida = vida - dañoRecibido
+    if (vida <= 0){
+      game.removeVisual(self)
+      position = game.at(-1,0)
+    }
   } 
   method mostrarVida() = vida
 
@@ -72,3 +78,4 @@ object controles {
   }
 }
 
+const jugador = new Jugador(vida = 100, arma = rifle)
