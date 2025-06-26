@@ -8,10 +8,15 @@ class Jugador {
   var puedeDisparar =  true
   var property position = game.at(2,2)
   method esBala() = false
+  method esEnemigo() = false
   
   method puedeDisparar() = puedeDisparar
 
   method posicionActual() = position
+
+  method cambiarPosicion(posX,posY) {
+    position =  game.at(posX,posY)
+  }
 
   method mostrarArma() = arma
   

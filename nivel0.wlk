@@ -19,7 +19,7 @@ object nivel0 {
   const tuto2 = new Indicaciones(nombre='tuto2',imagen='disparecon.png',duracion=10,position=game.at(12,14))
   const tuto3 = new Indicaciones(nombre='tuto3', imagen='instruccionPowerUp.png', duracion=10, position=game.at(11,9))
   const tuto4 = new Indicaciones(nombre='tuto4', imagen='tutorialInteractivo(1).png', duracion=10, position=game.at(4,14))
-  const tuto5 = new Indicaciones(nombre='tuto5', imagen='tutorialInteractivo(2).png', duracion=10, position=game.at(5,14))
+  const tuto5 = new Indicaciones(nombre='tuto5', imagen='tutorialInteractivo(2).png', duracion=10, position=game.at(4,14))
   const tuto6 = new Indicaciones(nombre='tuto6', imagen='Perfecto-pasemos-al-niv.png', duracion=10, position=game.at(10,14))
   
   

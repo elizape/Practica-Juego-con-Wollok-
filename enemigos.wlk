@@ -11,6 +11,7 @@ class Enemigos {
   const yAleatoria = new Range(start=0,end=3).anyOne()
   var property position = game.at(30,yAleatoria)
   method esBala() = false
+  method esEnemigo() = true
   
   method enemigoID() = 'enemigo_' + nombre
 
@@ -64,7 +65,7 @@ class AlienRaptor inherits Enemigos{
     if (self.detectarEnemigo()) {
       const posX = self.posicionActual().x() - 1
       const posY = self.posicionActual().y() + 0
-      const balaEnemigo = new BalaRifleEnemigo(position = game.at(posX, posY), id = 'balaEnemigo ' + idBala)
+      const balaEnemigo = new BalaRifleEnemigo(position = game.at(posX, posY), id = 'balaEnemigo' + nombre + idBala)
       game.addVisual(balaEnemigo)
       game.sound(self.mostrarArma().sonidoAleatorioArma()).play()
       balaEnemigo.desplazamientoBalaX(self.mostrarArma())

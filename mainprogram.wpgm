@@ -10,5 +10,5 @@ program juego{
     //menuPrincipal.fondoMenu()
     
     game.start()
-    nivel1.iniciar()
+    nivel0.iniciar()
 }

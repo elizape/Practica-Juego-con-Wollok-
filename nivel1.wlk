@@ -6,6 +6,7 @@ object nivel1 {
     method iniciar() {
       
       game.boardGround("FondoJuego(2).png")
+      jugador.cambiarPosicion(2,2)
       game.addVisual(jugador)
       game.sound("Mick Gordon - 11. BFG Division [QHRuTYtSbJQ].mp3").play()
       controles.teclas(jugador)

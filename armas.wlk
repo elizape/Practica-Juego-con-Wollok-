@@ -26,8 +26,9 @@ class Arma {
 
 class Bala{
     var property position
-    var id
+    const id
     method esBala() = true
+    method esEnemigo() = false
 
     const listaSonidoBala = ['sonidoBala(1).mp3','sonidoBala(2).mp3','sonidoBala(3).mp3']
 
@@ -39,12 +40,12 @@ class Bala{
     method movimientoEnX(posicion, arma) 
 
     method eliminarBala() {
-        game.removeTickEvent(self.balaID())
+        game.removeTickEvent(self.balaID().toString())
         game.removeVisual(self)
     }
 
     method desplazamientoBalaX(arma) {
-        game.onTick(2, self.balaID(), {self.movimientoEnX(self.posicionActual(),arma)})
+        game.onTick(2, self.balaID().toString(), {self.movimientoEnX(self.posicionActual(),arma)})
     }
 
     method colision() {
@@ -76,13 +77,14 @@ class BalaRifle inherits Bala{
 }
 
 class BalaRifleEnemigo inherits Bala{
-    method image() = "balaAlienRaptor(2).png"
+    
+    method image() = "balaAlienRaptor(4).png"
     
     override method movimientoEnX(posicion,arma) {
         // Habria que añadir la condicion de que se eliminen si impacta con un enemigo
         if (posicion.x()<0) {
             self.eliminarBala()
-        } else if (!self.colision() && !self.listaColisiones().get(0).esBala()) {
+        } else if (!self.colision() && !self.listaColisiones().get(0).esBala() && !self.listaColisiones().get(0).esEnemigo()) {
             game.sound(self.sonidoBala()).play()
             self.listaColisiones().get(0).recibirDaño(arma.dañoArma())
             self.eliminarBala()
