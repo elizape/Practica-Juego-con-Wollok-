@@ -8,7 +8,7 @@ object nivel1 {
       game.boardGround("FondoJuego(2).png")
       jugador.cambiarPosicion(2,2)
       game.addVisual(jugador)
-      game.sound("Mick Gordon - 11. BFG Division [QHRuTYtSbJQ].mp3").play()
+      //game.sound("Mick Gordon - 11. BFG Division [QHRuTYtSbJQ].mp3").play()
       controles.teclas(jugador)
 
       const tuto0 = new Indicaciones(nombre='tuto0', imagen='Nivel-1-ten-cuidado-con.png', duracion=7, position=game.at(8,14))
@@ -30,7 +30,7 @@ object nivel1 {
         
       } else if (puedeMostrar && id == tutos.size()) {
         game.removeTickEvent('espera')
-        creadorHordas.generarHordaAlien(15, 4)
+        creadorHordas.generarHordaAlien(15, 2, 3)
       } 
       })
       

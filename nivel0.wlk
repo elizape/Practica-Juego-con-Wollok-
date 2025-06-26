@@ -49,7 +49,7 @@ object nivel0 {
   method imagenTutorialInteractivo() {
     var id_interactivo = 0
     tutorialInteractivo.get(id_interactivo).visualizar()
-    creadorHordas.generarHordaAlien(1,1)
+    creadorHordas.generarHordaAlien(1,1,2)
     game.onTick(3000, 'muerteEnemigo', {
       var vidaEnemigo = creadorHordas.verListaEnemigos().get(id_interactivo).mostrarVida()
       if (vidaEnemigo <= 0 && id_interactivo == 0){
@@ -57,7 +57,7 @@ object nivel0 {
         tutorialInteractivo.get(id_interactivo).remover()
         id_interactivo += 1
         tutorialInteractivo.get(id_interactivo).visualizar()
-        creadorHordas.generarHordaCrawler(1,1)
+        creadorHordas.generarHordaCrawler(1,1,2)
         vidaEnemigo = creadorHordas.verListaEnemigos().get(id_interactivo).mostrarVida()
       } else if ((vidaEnemigo <= 0 && id_interactivo == 1)) {
         game.sound("level-up-enhancement-8-bit-retro-sound-effect-153002.mp3").play()

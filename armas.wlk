@@ -10,7 +10,6 @@ class Arma {
 
     method dañoArma() = daño
     method cadenciaDisparo() = cadencia
-    method disparar(objetivo) {}
     method sonidoAleatorioArma() {
         return listaSonidos.anyOne().toString()
     }
@@ -58,8 +57,6 @@ class Bala{
     }
 
     method posicionActual() = position
-    
-    
 }
 class BalaRifle inherits Bala{
     method image() = 'bala(5).png'
@@ -76,12 +73,25 @@ class BalaRifle inherits Bala{
     }
 }
 
-class BalaRifleEnemigo inherits Bala{
+class BalaRifleAlien inherits Bala{
     
-    method image() = "balaAlienRaptor(4).png"
+    method image() = "balaAlienRaptor(5).png"
     
     override method movimientoEnX(posicion,arma) {
-        // Habria que añadir la condicion de que se eliminen si impacta con un enemigo
+        if (posicion.x()<0) {
+            self.eliminarBala()
+        } else if (!self.colision() && !self.listaColisiones().get(0).esBala() && !self.listaColisiones().get(0).esEnemigo()) {
+            game.sound(self.sonidoBala()).play()
+            self.listaColisiones().get(0).recibirDaño(arma.dañoArma())
+            self.eliminarBala()
+        } else position = posicion.left(1)
+    }
+}
+
+class BalaCrawler inherits Bala{
+    method image() = "balaCrawler(4).png"
+
+    override method movimientoEnX(posicion,arma) {
         if (posicion.x()<0) {
             self.eliminarBala()
         } else if (!self.colision() && !self.listaColisiones().get(0).esBala() && !self.listaColisiones().get(0).esEnemigo()) {
@@ -94,4 +104,5 @@ class BalaRifleEnemigo inherits Bala{
 
 const rifle = new Arma(daño=10,cadencia=0.8, listaSonidos=['sonidoRifle(1).mp3','sonidoRifle(4).mp3','sonidoRifle(5).mp3'])
 const pistolaPlasma = new Arma(daño=7,cadencia=0.4, listaSonidos=['sonidoRifle(1).mp3','sonidoRifle(4).mp3','sonidoRifle(5).mp3'])
+const bolaFuego = new Arma(daño=10,cadencia=1.2, listaSonidos=[])
 //const cañonSonico = new Arma(daño=20,cadencia=1)

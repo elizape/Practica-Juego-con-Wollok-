@@ -74,6 +74,11 @@ class Jugador {
   }
 }
 
+object barraVida{
+  
+
+}
+
 object controles {
   method teclas(jugador) {
     keyboard.w().onPressDo {jugador.subir()}

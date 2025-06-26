@@ -23,10 +23,13 @@ class Enemigos {
       game.removeTickEvent(self.enemigoID() + 'disparo enemigo')
       game.removeTickEvent(self.enemigoID())
       game.removeVisual(self)
+      jugador.recibirDaño(15) //si el enemigo sale del mapa, le hace daño al jugador
     }
   }
 
   method movimiento()
+
+  method mostrarArma()
 
   method atacar(objetivo) {
     objetivo.recibirDaño(daño)
@@ -42,6 +45,16 @@ class Enemigos {
   method mostrarVida() = vida
 
   method atacar()
+
+  method disparar()
+
+  method detectarEnemigo() {
+    if (jugador.posicionActual().y() == self.posicionActual().y() && jugador.posicionActual().x() < self.posicionActual().x()) {
+      return true
+    } else (jugador.posicionActual().y() != self.posicionActual().y() || jugador.posicionActual().x() >= self.posicionActual().x()) {
+      return false
+    }
+  }
 }
 
 class AlienRaptor inherits Enemigos{
@@ -55,17 +68,17 @@ class AlienRaptor inherits Enemigos{
 
   method image() = 'alienRaptorArma.png'
 
-  method mostrarArma() = rifle
+  override method mostrarArma() = rifle
 
   override method atacar() {
     game.onTick(self.mostrarArma().cadenciaDisparo()*1000, self.enemigoID() + 'disparo enemigo', {self.disparar()})
   }
 
-  method disparar() {
+  override method disparar() {
     if (self.detectarEnemigo()) {
       const posX = self.posicionActual().x() - 1
       const posY = self.posicionActual().y() + 0
-      const balaEnemigo = new BalaRifleEnemigo(position = game.at(posX, posY), id = 'balaEnemigo' + nombre + idBala)
+      const balaEnemigo = new BalaRifleAlien(position = game.at(posX, posY), id = 'balaEnemigo' + nombre + idBala)
       game.addVisual(balaEnemigo)
       game.sound(self.mostrarArma().sonidoAleatorioArma()).play()
       balaEnemigo.desplazamientoBalaX(self.mostrarArma())
@@ -73,18 +86,13 @@ class AlienRaptor inherits Enemigos{
     }
   }
 
-  method detectarEnemigo() {
-    if (jugador.posicionActual().y() == self.posicionActual().y() && jugador.posicionActual().x() < self.posicionActual().x()) {
-      return true
-    } else (jugador.posicionActual().y() != self.posicionActual().y() || jugador.posicionActual().x() >= self.posicionActual().x()) {
-      return false
-    }
-  }
 }
 
 class Crawler inherits Enemigos {
 
-  override method atacar() = null
+  var idBala = 0
+
+  override method mostrarArma() = bolaFuego
 
   override method movimiento(){
     const tiempo = new Range(start = 500, end = 750).anyOne() //una velocidad minima de 500 maxima 1000
@@ -92,6 +100,22 @@ class Crawler inherits Enemigos {
   }
 
   method image() = 'crawler(2).png'
+
+  override method atacar() {
+    game.onTick(self.mostrarArma().cadenciaDisparo()*1000, self.enemigoID() + 'disparo enemigo', {self.disparar()})
+  }
+
+  override method disparar() {
+    if (self.detectarEnemigo()) {
+      const posX = self.posicionActual().x() - 1
+      const posY = self.posicionActual().y() + 0
+      const balaEnemigo = new BalaCrawler(position = game.at(posX, posY), id = 'balaEnemigo' + nombre + idBala)
+      game.addVisual(balaEnemigo)
+      //game.sound(self.mostrarArma().sonidoAleatorioArma()).play()
+      balaEnemigo.desplazamientoBalaX(self.mostrarArma())
+      idBala += 1
+    }
+  }
 }
 
 class FinalBoss inherits Enemigos{
@@ -104,9 +128,9 @@ object creadorHordas {
 
   method verListaEnemigos() = listaEnemigos
   
-  method generarHordaAlien(cantidad, tiempoMinimoSpawn){
+  method generarHordaAlien(cantidad, tiempoMinimoSpawn,tiempoMaximoSpawn){
       var id = 0
-      game.onTick(self.tiempoAparicion(tiempoMinimoSpawn)*1000, 'horda Enemigos',{
+      game.onTick(self.tiempoAparicion(tiempoMinimoSpawn,tiempoMaximoSpawn)*1000, 'horda Enemigos',{
         if (id < cantidad) {
           const enemigo = self.generarAlienRaptor(id)
           game.addVisual(enemigo)
@@ -118,9 +142,9 @@ object creadorHordas {
       })
   }
 
-  method generarHordaCrawler(cantidad, tiempoMinimoSpawn){
+  method generarHordaCrawler(cantidad, tiempoMinimoSpawn,tiempoMaximoSpawn){
       var id = 0
-      game.onTick(self.tiempoAparicion(tiempoMinimoSpawn)*1000, 'horda Enemigos',{
+      game.onTick(self.tiempoAparicion(tiempoMinimoSpawn,tiempoMaximoSpawn)*1000, 'horda Enemigos',{
         if (id < cantidad) {
           const enemigo = self.generarCrawler(id)
           listaEnemigos.add(enemigo)
@@ -132,9 +156,9 @@ object creadorHordas {
       })
   }
   
-  method generarHordaAleatoria(cantidad, tiempoMinimoSpawn){
+  method generarHordaAleatoria(cantidad, tiempoMinimoSpawn,tiempoMaximoSpawn){
       var id = 0
-      game.onTick(self.tiempoAparicion(tiempoMinimoSpawn)*1000, 'horda Enemigos',{
+      game.onTick(self.tiempoAparicion(tiempoMinimoSpawn,tiempoMaximoSpawn)*1000, 'horda Enemigos',{
         if (id < cantidad) {
           const enemigo = self.generarEnemigoAleatorio(id)
           listaEnemigos.add(enemigo)
@@ -146,8 +170,8 @@ object creadorHordas {
       })
     }
 
-  method tiempoAparicion(tiempoMinimo) {
-      return new Range(start = tiempoMinimo, end = 7).anyOne() //elige entre un tiempo minimo de (tiempoMinimo)segundos y un tiempo maximo de 7segundos
+  method tiempoAparicion(tiempoMinimo,tiempoMaximo) {
+      return new Range(start = tiempoMinimo, end = tiempoMaximo).anyOne() //elige entre un tiempo minimo de (tiempoMinimo)segundos y un tiempo maximo de 7segundos
     }
 
     method generarEnemigoAleatorio(id){
