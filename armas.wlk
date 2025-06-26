@@ -27,6 +27,7 @@ class Arma {
 class Bala{
     var property position
     var id
+    method esBala() = true
 
     const listaSonidoBala = ['sonidoBala(1).mp3','sonidoBala(2).mp3','sonidoBala(3).mp3']
 
@@ -34,6 +35,8 @@ class Bala{
     method balaID() = 'movimientoBala_' + id
 
     method sonidoBala() = listaSonidoBala.anyOne().toString()
+
+    method movimientoEnX(posicion, arma) 
 
     method eliminarBala() {
         game.removeTickEvent(self.balaID())
@@ -44,46 +47,47 @@ class Bala{
         game.onTick(2, self.balaID(), {self.movimientoEnX(self.posicionActual(),arma)})
     }
 
-    method desplazamientoBalaY(arma) {
-        game.onTick(2, self.balaID(), {self.movimientoEnY(self.posicionActual(),arma)})
-    }
-
-    method movimientoEnX(posicion, arma) {
-        // Habria que añadir la condicion de que se eliminen si impacta con un enemigo
-        if (posicion.x()>32) {
-            self.eliminarBala()
-        } else if (!self.colision()) {
-            game.sound(self.sonidoBala()).play()
-            self.listaColisiones().get(0).recibirDaño(arma.dañoArma())
-            self.eliminarBala()
-        } else position = posicion.right(1)
-    }
-
-    method movimientoEnY(posicion,arma) {
-        // Habria que añadir la condicion de que se eliminen si impacta con un enemigo
-        if (posicion.x()<0) {
-            self.eliminarBala()
-        } else if (!self.colision()) {
-            game.sound(self.sonidoBala()).play()
-            self.listaColisiones().get(0).recibirDaño(arma.dañoArma())
-            self.eliminarBala()
-        } else position = posicion.left(1)
-    }
-
     method colision() {
         return self.listaColisiones().isEmpty()
     }
 
     method listaColisiones() {
+
         return game.colliders(self)
     }
 
     method posicionActual() = position
     
-    method image() = 'bala(5).png'
+    
 }
 class BalaRifle inherits Bala{
+    method image() = 'bala(5).png'
     
+    override method movimientoEnX(posicion, arma) {
+        // Habria que añadir la condicion de que se eliminen si impacta con un enemigo
+        if (posicion.x()>32) {
+            self.eliminarBala()
+        } else if (!self.colision() && !self.listaColisiones().get(0).esBala()) {
+            game.sound(self.sonidoBala()).play()
+            self.listaColisiones().get(0).recibirDaño(arma.dañoArma())
+            self.eliminarBala()
+        } else position = posicion.right(1)
+    }
+}
+
+class BalaRifleEnemigo inherits Bala{
+    method image() = "balaAlienRaptor(2).png"
+    
+    override method movimientoEnX(posicion,arma) {
+        // Habria que añadir la condicion de que se eliminen si impacta con un enemigo
+        if (posicion.x()<0) {
+            self.eliminarBala()
+        } else if (!self.colision() && !self.listaColisiones().get(0).esBala()) {
+            game.sound(self.sonidoBala()).play()
+            self.listaColisiones().get(0).recibirDaño(arma.dañoArma())
+            self.eliminarBala()
+        } else position = posicion.left(1)
+    }
 }
 
 const rifle = new Arma(daño=10,cadencia=0.8, listaSonidos=['sonidoRifle(1).mp3','sonidoRifle(4).mp3','sonidoRifle(5).mp3'])

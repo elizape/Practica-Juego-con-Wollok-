@@ -10,6 +10,7 @@ class Enemigos {
   const daño
   const yAleatoria = new Range(start=0,end=3).anyOne()
   var property position = game.at(30,yAleatoria)
+  method esBala() = false
   
   method enemigoID() = 'enemigo_' + nombre
 
@@ -17,6 +18,11 @@ class Enemigos {
 
   method avanzar() {
     position = position.left(1)
+    if (self.posicionActual().x() < -3){
+      game.removeTickEvent(self.enemigoID() + 'disparo enemigo')
+      game.removeTickEvent(self.enemigoID())
+      game.removeVisual(self)
+    }
   }
 
   method movimiento()
@@ -27,6 +33,7 @@ class Enemigos {
   method recibirDaño(dañoRecibido) {
     vida = vida - dañoRecibido
     if (vida <= 0){
+      game.removeTickEvent(self.enemigoID() + 'disparo enemigo')
       game.removeTickEvent(self.enemigoID())
       game.removeVisual(self)
     }
@@ -47,7 +54,7 @@ class AlienRaptor inherits Enemigos{
 
   method image() = 'alienRaptorArma.png'
 
-  method mostrarArma() = pistolaPlasma
+  method mostrarArma() = rifle
 
   override method atacar() {
     game.onTick(self.mostrarArma().cadenciaDisparo()*1000, self.enemigoID() + 'disparo enemigo', {self.disparar()})
@@ -57,18 +64,18 @@ class AlienRaptor inherits Enemigos{
     if (self.detectarEnemigo()) {
       const posX = self.posicionActual().x() - 1
       const posY = self.posicionActual().y() + 0
-      const balaEnemigo = new BalaRifle(position = game.at(posX, posY), id = 'balaEnemigo ' + idBala)
+      const balaEnemigo = new BalaRifleEnemigo(position = game.at(posX, posY), id = 'balaEnemigo ' + idBala)
       game.addVisual(balaEnemigo)
       game.sound(self.mostrarArma().sonidoAleatorioArma()).play()
-      balaEnemigo.desplazamientoBalaY(self.mostrarArma())
+      balaEnemigo.desplazamientoBalaX(self.mostrarArma())
       idBala += 1
     }
   }
 
   method detectarEnemigo() {
-    if (jugador.posicionActual().y() == self.posicionActual().y()) {
+    if (jugador.posicionActual().y() == self.posicionActual().y() && jugador.posicionActual().x() < self.posicionActual().x()) {
       return true
-    } else (jugador.posicionActual().y() != self.posicionActual().y()) {
+    } else (jugador.posicionActual().y() != self.posicionActual().y() || jugador.posicionActual().x() >= self.posicionActual().x()) {
       return false
     }
   }

@@ -29,7 +29,7 @@ object nivel1 {
         
       } else if (puedeMostrar && id == tutos.size()) {
         game.removeTickEvent('espera')
-        creadorHordas.generarHordaAlien(2, 1)
+        creadorHordas.generarHordaAlien(15, 4)
       } 
       })
       

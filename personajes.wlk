@@ -7,6 +7,7 @@ class Jugador {
   var idBala = 0
   var puedeDisparar =  true
   var property position = game.at(2,2)
+  method esBala() = false
   
   method puedeDisparar() = puedeDisparar
 
@@ -23,7 +24,7 @@ class Jugador {
     if (self.puedeDisparar()) {
         const posX = self.posicionActual().x() + 1
         const posY = self.posicionActual().y() + 0
-        const bala = new Bala(position = game.at(posX, posY), id = idBala)
+        const bala = new BalaRifle(position = game.at(posX, posY), id = idBala)
         game.addVisual(bala)
         game.sound(self.mostrarArma().sonidoAleatorioArma()).play()
         bala.desplazamientoBalaX(self.mostrarArma())
@@ -40,8 +41,9 @@ class Jugador {
   method recibirDaño(dañoRecibido) {
     vida = vida - dañoRecibido
     if (vida <= 0){
+      puedeDisparar = false
       game.removeVisual(self)
-      position = game.at(-1,0)
+      position = game.at(0,30)
     }
   } 
   method mostrarVida() = vida
