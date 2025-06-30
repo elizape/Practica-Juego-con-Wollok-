@@ -27,6 +27,16 @@ class Enemigos {
     }
   }
 
+  method pausar() {
+    game.removeTickEvent(self.enemigoID())
+    game.removeTickEvent(self.enemigoID() + 'disparo enemigo')
+  }
+
+  method despausar() {
+    self.movimiento()
+    self.atacar()
+  }
+
   method movimiento()
 
   method mostrarArma()
@@ -40,6 +50,7 @@ class Enemigos {
       game.removeTickEvent(self.enemigoID() + 'disparo enemigo')
       game.removeTickEvent(self.enemigoID())
       game.removeVisual(self)
+      creadorHordas.removerEnemigo(self)
     }
   }
   method mostrarVida() = vida
@@ -49,11 +60,7 @@ class Enemigos {
   method disparar()
 
   method detectarEnemigo() {
-    if (jugador.posicionActual().y() == self.posicionActual().y() && jugador.posicionActual().x() < self.posicionActual().x()) {
-      return true
-    } else (jugador.posicionActual().y() != self.posicionActual().y() || jugador.posicionActual().x() >= self.posicionActual().x()) {
-      return false
-    }
+    return jugador.posicionActual().y() == self.posicionActual().y() && jugador.posicionActual().x() < self.posicionActual().x()
   }
 }
 
@@ -78,10 +85,11 @@ class AlienRaptor inherits Enemigos{
     if (self.detectarEnemigo()) {
       const posX = self.posicionActual().x() - 1
       const posY = self.posicionActual().y() + 0
-      const balaEnemigo = new BalaRifleAlien(position = game.at(posX, posY), id = 'balaEnemigo' + nombre + idBala)
+      const balaEnemigo = new BalaRifleAlien(position = game.at(posX, posY), id = 'balaEnemigo' + nombre + idBala, arma=self.mostrarArma())
+      listaBalas.añadirBala(balaEnemigo)
       game.addVisual(balaEnemigo)
       game.sound(self.mostrarArma().sonidoAleatorioArma()).play()
-      balaEnemigo.desplazamientoBalaX(self.mostrarArma())
+      balaEnemigo.desplazamientoBalaX()
       idBala += 1
     }
   }
@@ -109,12 +117,13 @@ class Crawler inherits Enemigos {
     if (self.detectarEnemigo()) {
       const posX = self.posicionActual().x() - 1
       const posY = self.posicionActual().y() + 0
-      const balaEnemigo = new BalaCrawler(position = game.at(posX, posY), id = 'balaEnemigo' + nombre + idBala)
+      const balaEnemigo = new BalaCrawler(position = game.at(posX, posY), id = 'balaEnemigo' + nombre + idBala, arma=self.mostrarArma())
+      listaBalas.añadirBala(balaEnemigo)
       game.addVisual(balaEnemigo)
-      //game.sound(self.mostrarArma().sonidoAleatorioArma()).play()
-      balaEnemigo.desplazamientoBalaX(self.mostrarArma())
+      game.sound(self.mostrarArma().sonidoAleatorioArma()).play()
+      balaEnemigo.desplazamientoBalaX()
       idBala += 1
-    }
+    } 
   }
 }
 
@@ -127,11 +136,19 @@ object creadorHordas {
   const listaEnemigos = []
 
   method verListaEnemigos() = listaEnemigos
+
+  method removerEnemigo(enemigo) {
+    listaEnemigos.remove(enemigo)
+  }
+
+  method reiniciarLista() {
+    listaEnemigos.clear()
+  }
   
   method generarHordaAlien(cantidad, tiempoMinimoSpawn,tiempoMaximoSpawn){
       var id = 0
       game.onTick(self.tiempoAparicion(tiempoMinimoSpawn,tiempoMaximoSpawn)*1000, 'horda Enemigos',{
-        if (id < cantidad) {
+        if (id < cantidad && nivel.estaPausado()) {
           const enemigo = self.generarAlienRaptor(id)
           game.addVisual(enemigo)
           enemigo.movimiento()
@@ -145,7 +162,7 @@ object creadorHordas {
   method generarHordaCrawler(cantidad, tiempoMinimoSpawn,tiempoMaximoSpawn){
       var id = 0
       game.onTick(self.tiempoAparicion(tiempoMinimoSpawn,tiempoMaximoSpawn)*1000, 'horda Enemigos',{
-        if (id < cantidad) {
+        if (id < cantidad && nivel.estaPausado()) {
           const enemigo = self.generarCrawler(id)
           listaEnemigos.add(enemigo)
           game.addVisual(enemigo)
@@ -159,7 +176,7 @@ object creadorHordas {
   method generarHordaAleatoria(cantidad, tiempoMinimoSpawn,tiempoMaximoSpawn){
       var id = 0
       game.onTick(self.tiempoAparicion(tiempoMinimoSpawn,tiempoMaximoSpawn)*1000, 'horda Enemigos',{
-        if (id < cantidad) {
+        if (id < cantidad && nivel.estaPausado()) {
           const enemigo = self.generarEnemigoAleatorio(id)
           listaEnemigos.add(enemigo)
           game.addVisual(enemigo)

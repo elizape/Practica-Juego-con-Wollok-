@@ -12,7 +12,7 @@ class Indicaciones {
   
   method remover() {
     game.removeVisual(self)
-    game.removeTickEvent(nombre)
+    game.removeTickEvent(self)
   }
   method nombreGetter() = nombre
 
@@ -20,3 +20,6 @@ class Indicaciones {
 
   method duracionImagen() = duracion
 }
+
+const imagen342 = new Indicaciones(nombre='hasPerdido', imagen='Has-Muerto(1).png', duracion=1,position=game.at(0,0))
+const imagen343 = new Indicaciones(nombre='reiniciar', imagen='reiniciar(3).png', duracion=1, position=game.at(11,5))
