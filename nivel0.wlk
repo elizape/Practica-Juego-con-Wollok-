@@ -4,19 +4,17 @@ import armas.*
 import imagenIndicaciones.*
 import nivel1.*
 
- object fondo1 {
-   var property position = game.at(0,0)
-   method image() = "FondoJuego(3).png"
+class FondosNivel {
+  const imagen
+  var property position = game.at(0,0)
+  method image() = imagen
    method esBala() = true
    method esEnemigo() = true
- }
+}
 
- object fondo2 {
-   var property position = game.at(0,0)
-   method image() = "FondoJuegoPrueba(2).png"
-   method esBala() = true
-   method esEnemigo() = true
- }
+const fondo1 = new FondosNivel(imagen="FondoJuego(3).png")
+const fondo2 = new FondosNivel(imagen="FondoJuegoPrueba(2).png")
+const fondo3 = new FondosNivel(imagen='FondoJuegoPrueba(4).png')
 
 object nivel0 {
 
@@ -94,6 +92,8 @@ object nivel0 {
         }
     })
   }
+
+  method nivelCancion() = cancionNivel0
 }
 
 const cancionNivel0 = game.sound('nivelCeroSong(1).mp3')

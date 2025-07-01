@@ -206,4 +206,13 @@ object creadorHordas {
       return new Crawler(nombre='crawler'+id.toString(), vida=30, daño=10)
     }
 
+  method verificarSiHayEnemigo() {
+    game.onTick(3000, 'verificarSiHayEnemigos',{
+      if (self.verListaEnemigos().isEmpty()) {
+        nivel.nivelSuperado()
+        game.removeTickEvent('verificarSiHayEnemigos')
+      }
+    })
+  }
+
 }

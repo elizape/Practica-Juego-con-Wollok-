@@ -106,11 +106,13 @@ object controles {
     keyboard.d().onPressDo {jugador.adelante()}
     keyboard.p().onPressDo {jugador.disparar()}
     keyboard.enter().onPressDo {nivel0.cambiarImagen()}
+    // (r) reinicia el nivel
     keyboard.r().onPressDo ({
       if (jugador.estaMuerto() || !nivel.estaPausado()) {
         nivel.reiniciarNivel()
       }
     })
+    // (m) accede al menu de pausa o reanuda el juego
     keyboard.m().onPressDo {
       if (nivel.estaPausado()) {
         game.addVisual(menuPausa)
@@ -139,7 +141,11 @@ object nivel {
     listaBalas.mostrarLista().forEach({b => b.despausar()})
   }
   method nivelSuperado() {
-    
+    self.detenerJuego()
+    imagen341.visualizar()
+    game.schedule(2000, {
+          imagen343.visualizar()
+        })  //agregar siguiente nivel
   }
 
   method nivelPerdido () {
@@ -148,9 +154,8 @@ object nivel {
       imagen342.visualizar()
       game.sound('gameOver(3).mp3').play()
       game.onTick(2000, 'esperaSonido2', {
-        game.onTick(2000, 'esperaSonido3', {
+        game.schedule(2000, {
           imagen343.visualizar()
-          game.removeTickEvent('esperaSonido3')
         })
         game.sound('gameOver(2).mp3').play()
         game.removeTickEvent('esperaSonido2')
@@ -161,7 +166,7 @@ object nivel {
   }
 
   method reiniciarNivel() {
-    cancionNivel1.stop() // hay que agregar una cancion al nivel 0
+    jugador.numeroNivel().nivelCancion().stop()
     game.schedule(40, {
       jugador.numeroNivel().reiniciarNivel()
       jugador.reiniciarVida()

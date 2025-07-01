@@ -21,5 +21,7 @@ class Indicaciones {
   method duracionImagen() = duracion
 }
 
+const imagen341 = new Indicaciones(nombre='hasGanado', imagen='Has-Ganado(2).png', duracion=1, position=game.at(0,0))
 const imagen342 = new Indicaciones(nombre='hasPerdido', imagen='Has-Muerto(1).png', duracion=1,position=game.at(0,0))
 const imagen343 = new Indicaciones(nombre='reiniciar', imagen='reiniciar(3).png', duracion=1, position=game.at(11,5))
+const imagenNivel1 = new Indicaciones(nombre='tuto0', imagen='Nivel-1-ten-cuidado-con.png', duracion=7, position=game.at(8,14))
