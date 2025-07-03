@@ -149,20 +149,22 @@ object creadorHordas {
   }
 
   method reiniciarLista() {
+    game.removeTickEvent('horda Enemigos')
+    puedeGenerar = true
     listaEnemigos.clear()
   }
   
   method generarHordaAlien(cantidad, tiempoMinimoSpawn,tiempoMaximoSpawn){
-      var id = 0
+      var idAlien = 0
       self.cambiarPuedeGenerar()
       game.onTick(self.tiempoAparicion(tiempoMinimoSpawn,tiempoMaximoSpawn)*1000, 'horda Enemigos',{
-        if (id < cantidad && nivel.estaPausado()) {
-          const enemigo = self.generarAlienRaptor(id)
+        if (idAlien < cantidad && nivel.estaPausado()) {
+          const enemigo = self.generarAlienRaptor(idAlien)
           game.addVisual(enemigo)
           enemigo.movimiento()
           listaEnemigos.add(enemigo)
           enemigo.atacar()
-          id += 1
+          idAlien += 1
         } else if (nivel.estaPausado()) {
           self.cambiarPuedeGenerar()
           game.removeTickEvent('horda Enemigos')

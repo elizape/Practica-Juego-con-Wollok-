@@ -157,7 +157,7 @@ object nivel {
   }
 
   method nivelPerdido () {
-    game.schedule(1,{
+    game.schedule(40,{
       self.detenerJuego()
       imagen342.visualizar()
       game.sound('gameOver(3).mp3').play()
@@ -209,7 +209,7 @@ object listaBalas {
   }
 
   method reiniciarLista() {
-    balas.clear()
+    self.mostrarLista().forEach({p => p.eliminarBala()})
   }
 }
 

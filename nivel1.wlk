@@ -6,14 +6,11 @@ import nivel0.*
 import nivel2.*
 object nivel1 {
 
-  var id = 0
-  var puedeMostrar = true
-
   method nivelSiguiente() = nivel2
 
   method reiniciarNivel() {
-    id = 0
-    puedeMostrar = true
+    game.removeTickEvent('Segunda Generacion')
+    game.removeTickEvent('VerificoSiHayEnemigo')
     game.clear()
     creadorHordas.reiniciarLista()
     listaBalas.reiniciarLista()
@@ -38,7 +35,11 @@ object nivel1 {
         game.removeVisual(imagenNivel1)
         creadorHordas.generarHordaAlien(3, 4, 4) 
         game.onTick(3000, 'Segunda Generacion', {
-          if (creadorHordas.obtenerPuedeGenerar()){
+          if (creadorHordas.verificarSiHayEnemigo()){
+            game.addVisual(imagenMasEnemigos)
+            game.schedule(4000, {
+              game.removeVisual(imagenMasEnemigos)
+            })
             creadorHordas.generarHordaAlien(7, 4, 4)
             game.onTick(3000, 'VerificoSiHayEnemigo', {
               if(creadorHordas.verificarSiHayEnemigo()) {

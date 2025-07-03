@@ -10,5 +10,5 @@ program juego{
     game.width(32)
     game.height(18)
     game.start()
-    nivel1.iniciar()
+    nivel3.iniciar()
 }

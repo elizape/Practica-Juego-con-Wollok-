@@ -8,14 +8,11 @@ import imagenIndicaciones.*
 import nivel3.*
 object nivel2 {
 
-  var id = 0
-  var puedeMostrar = true
-
   method nivelSiguiente() = nivel3
 
   method reiniciarNivel() {
-    id = 0
-    puedeMostrar = true
+    game.removeTickEvent('Segunda Generacion')
+    game.removeTickEvent('VerificoSiHayEnemigo')
     game.clear()
     jugador.reiniciarVida()
     jugador.obtenerNivel(self)
@@ -41,12 +38,16 @@ object nivel2 {
         creadorHordas.generarHordaCrawler(7, 4, 5)
         game.onTick(3000, 'Segunda Generacion', {
             if (creadorHordas.obtenerPuedeGenerar()) {
-                creadorHordas.generarHordaCrawler(7, 3, 3)
-                game.onTick(3000, 'Verifica si quedan enemigos', {
-                    if (creadorHordas.verificarSiHayEnemigo()){
-                        game.removeTickEvent('Verifica si quedan enemigos')
-                        nivel.nivelSuperado()
-                    }
+              game.addVisual(imagenMasEnemigos)
+              game.schedule(4000, {
+                game.removeVisual(imagenMasEnemigos)
+              })
+              creadorHordas.generarHordaCrawler(7, 3, 3)
+              game.onTick(3000, 'VerificoSiHayEnemigo', {
+                  if (creadorHordas.verificarSiHayEnemigo()){
+                      game.removeTickEvent('VerificoSiHayEnemigo')
+                      nivel.nivelSuperado()
+                  }
                 })
                 game.removeTickEvent('Segunda Generacion')
             }

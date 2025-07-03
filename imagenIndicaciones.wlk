@@ -37,8 +37,10 @@ const fondo3 = new FondosNivel(imagen='FondoJuegoPrueba(4).png')
 
 // Imagenes Utilizadas en el juego
 
+const imagenMasEnemigos = new Indicaciones(nombre='imagenMasEnemigos', imagen='Nivel + MasEnemigos.png', duracion=7, position=game.at(8,14))
 const imagen341 = new Indicaciones(nombre='hasGanado', imagen='Has-Ganado(2).png', duracion=1, position=game.at(0,0))
 const imagen342 = new Indicaciones(nombre='hasPerdido', imagen='Has-Muerto(1).png', duracion=1,position=game.at(0,0))
 const imagen343 = new Indicaciones(nombre='reiniciar', imagen='reiniciar(3).png', duracion=1, position=game.at(11,5))
 const imagenNivel1 = new Indicaciones(nombre='imagenNivel1', imagen='Nivel-1-ten-cuidado-con.png', duracion=7, position=game.at(8,14))
 const imagenNivel2 = new Indicaciones(nombre='imagenNivel2', imagen='Nivel-2-Crawlers.png', duracion=7, position=game.at(9,14))
+const imagenNivel3 = new Indicaciones(nombre='imagenNivel3', imagen='Nivel-3-Alien-Crawler.png', duracion=7, position=game.at(7,14))

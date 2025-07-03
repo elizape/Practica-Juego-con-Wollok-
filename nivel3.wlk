@@ -9,14 +9,11 @@ import nivel1.*
 import nivel2.*
 object nivel3 {
 
-  var id = 0
-  var puedeMostrar = true
-
   method nivelSiguiente() = nivel1
 
   method reiniciarNivel() {
-    id = 0
-    puedeMostrar = true
+    game.removeTickEvent('Segunda Generacion')
+    game.removeTickEvent('VerificoSiHayEnemigo')
     game.clear()
     jugador.reiniciarVida()
     jugador.obtenerNivel(self)
@@ -36,11 +33,16 @@ object nivel3 {
     controles.teclas(jugador)
 
     game.schedule(500, {
-      //game.addVisual(imagenNivel3)
+      game.addVisual(imagenNivel3)
       game.schedule(4000, {
-        //game.removeVisual(imagenNivel3)
-        creadorHordas.generarHordaAleatoria(12, 2, 2) //Genera las hordas
-
+        game.removeVisual(imagenNivel3)
+        creadorHordas.generarHordaAleatoria(1, 2, 2) //Genera las hordas
+        game.onTick(3000, 'VerificoSiHayEnemigo', {
+          if(creadorHordas.verificarSiHayEnemigo()) {
+            game.removeTickEvent('VerificoSiHayEnemigo')
+            nivel.nivelSuperado()
+          }
+        })
       })
     })
   }
