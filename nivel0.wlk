@@ -4,27 +4,16 @@ import armas.*
 import imagenIndicaciones.*
 import nivel1.*
 
-class FondosNivel {
-  const imagen
-  var property position = game.at(0,0)
-  method image() = imagen
-   method esBala() = true
-   method esEnemigo() = true
-}
-
-const fondo1 = new FondosNivel(imagen="FondoJuego(3).png")
-const fondo2 = new FondosNivel(imagen="FondoJuegoPrueba(2).png")
-const fondo3 = new FondosNivel(imagen='FondoJuegoPrueba(4).png')
-
 object nivel0 {
 
   method reiniciarNivel() {
     id = 0
+    game.clear()
+    cancionNivel0.play()
   }
 
   method iniciar() {
-    game.clear()
-    cancionNivel0.play()
+    self.reiniciarNivel()
     cancionNivel0.volume(0.3)
     jugador.obtenerNivel(self)
     jugador.reiniciarVida()
@@ -89,7 +78,7 @@ object nivel0 {
           cancionNivel0.stop()
           nivel1.iniciar()
         })
-        }
+      }
     })
   }
 

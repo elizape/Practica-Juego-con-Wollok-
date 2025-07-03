@@ -134,6 +134,13 @@ class FinalBoss inherits Enemigos{
 object creadorHordas {
   const tipoDeEnemigo = ['alien','crawler']
   const listaEnemigos = []
+  var puedeGenerar = true
+
+  method obtenerPuedeGenerar() = puedeGenerar
+
+  method cambiarPuedeGenerar() {
+    puedeGenerar = !puedeGenerar
+  }
 
   method verListaEnemigos() = listaEnemigos
 
@@ -147,6 +154,7 @@ object creadorHordas {
   
   method generarHordaAlien(cantidad, tiempoMinimoSpawn,tiempoMaximoSpawn){
       var id = 0
+      self.cambiarPuedeGenerar()
       game.onTick(self.tiempoAparicion(tiempoMinimoSpawn,tiempoMaximoSpawn)*1000, 'horda Enemigos',{
         if (id < cantidad && nivel.estaPausado()) {
           const enemigo = self.generarAlienRaptor(id)
@@ -155,12 +163,16 @@ object creadorHordas {
           listaEnemigos.add(enemigo)
           enemigo.atacar()
           id += 1
+        } else if (nivel.estaPausado()) {
+          self.cambiarPuedeGenerar()
+          game.removeTickEvent('horda Enemigos')
         }
       })
   }
 
   method generarHordaCrawler(cantidad, tiempoMinimoSpawn,tiempoMaximoSpawn){
       var id = 0
+      self.cambiarPuedeGenerar()
       game.onTick(self.tiempoAparicion(tiempoMinimoSpawn,tiempoMaximoSpawn)*1000, 'horda Enemigos',{
         if (id < cantidad && nivel.estaPausado()) {
           const enemigo = self.generarCrawler(id)
@@ -169,12 +181,16 @@ object creadorHordas {
           enemigo.movimiento()
           enemigo.atacar()
           id += 1
+        } else if (nivel.estaPausado()) {
+          self.cambiarPuedeGenerar()
+          game.removeTickEvent('horda Enemigos')
         }
       })
   }
   
   method generarHordaAleatoria(cantidad, tiempoMinimoSpawn,tiempoMaximoSpawn){
       var id = 0
+      self.cambiarPuedeGenerar()
       game.onTick(self.tiempoAparicion(tiempoMinimoSpawn,tiempoMaximoSpawn)*1000, 'horda Enemigos',{
         if (id < cantidad && nivel.estaPausado()) {
           const enemigo = self.generarEnemigoAleatorio(id)
@@ -183,6 +199,9 @@ object creadorHordas {
           enemigo.movimiento()
           enemigo.atacar()
           id += 1
+        } else if (nivel.estaPausado()) {
+          self.cambiarPuedeGenerar()
+          game.removeTickEvent('horda Enemigos')
         }
       })
     }
@@ -207,12 +226,7 @@ object creadorHordas {
     }
 
   method verificarSiHayEnemigo() {
-    game.onTick(3000, 'verificarSiHayEnemigos',{
-      if (self.verListaEnemigos().isEmpty()) {
-        nivel.nivelSuperado()
-        game.removeTickEvent('verificarSiHayEnemigos')
-      }
-    })
+      return (self.obtenerPuedeGenerar() && self.verListaEnemigos().isEmpty() && nivel.estaPausado())
   }
 
 }

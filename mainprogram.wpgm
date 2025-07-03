@@ -3,12 +3,12 @@ import wollok.game.*
 import menuPrincipal.*
 import nivel0.nivel0
 import nivel1.nivel1
+import nivel2.nivel2
+import nivel3.nivel3
 
 program juego{
     game.width(32)
     game.height(18)
-    //menuPrincipal.fondoMenu()
-    
     game.start()
-    nivel0.iniciar()
+    nivel1.iniciar()
 }

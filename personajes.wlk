@@ -140,27 +140,33 @@ object nivel {
     creadorHordas.verListaEnemigos().forEach({p => p.despausar()})
     listaBalas.mostrarLista().forEach({b => b.despausar()})
   }
+
   method nivelSuperado() {
     self.detenerJuego()
     imagen341.visualizar()
     game.schedule(2000, {
           imagen343.visualizar()
+          game.schedule(5000, {
+            jugador.numeroNivel().nivelCancion().stop()
+            jugador.reiniciarVida()
+            barraVida.reiniciarBarraVida()
+            jugador.numeroNivel().nivelSiguiente().iniciar()
+            self.reanudarJuego()
+          })
         })  //agregar siguiente nivel
   }
 
   method nivelPerdido () {
-    game.onTick(1, 'espera1',{
+    game.schedule(1,{
       self.detenerJuego()
       imagen342.visualizar()
       game.sound('gameOver(3).mp3').play()
-      game.onTick(2000, 'esperaSonido2', {
+      game.schedule(2000, {
         game.schedule(2000, {
           imagen343.visualizar()
         })
         game.sound('gameOver(2).mp3').play()
-        game.removeTickEvent('esperaSonido2')
       })
-      game.removeTickEvent('espera1')
     })
     
   }
@@ -168,13 +174,12 @@ object nivel {
   method reiniciarNivel() {
     jugador.numeroNivel().nivelCancion().stop()
     game.schedule(40, {
-      jugador.numeroNivel().reiniciarNivel()
-      jugador.reiniciarVida()
       barraVida.reiniciarBarraVida()
       jugador.numeroNivel().iniciar()
-      self.reanudarJuego()
+      game.schedule(1000, {
+        self.reanudarJuego()
+      })
     })
-    
   }
 
   method cancionNivel(cancionNivel) {
